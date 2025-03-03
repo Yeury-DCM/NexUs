@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NexUs.Infrastructure.Identity\NexUs.Infrastructure.Identity.csproj" />
+  </ItemGroup>
+
 </Project>

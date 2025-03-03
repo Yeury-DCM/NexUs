@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35728.132 d17.12
+VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{8202D1D1-C404-4D2C-AFEA-73A48ECBCEE4}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexUs.Infrastructure.Persistence", "NexUs.Infrastructure.Persistence\NexUs.Infrastructure.Persistence.csproj", "{0119239D-635F-4D74-B413-0661BF9235A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexUs.Infrastructure.Shared", "NexUs.Infrastructure.Shared\NexUs.Infrastructure.Shared.csproj", "{A3BE9AFC-C214-4973-896B-699D9038DC79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexUs.Infrastructure.Identity", "NexUs.Infrastructure.Identity\NexUs.Infrastructure.Identity.csproj", "{E592E6CF-A978-4AA9-B251-74D7D2A17FE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{A3BE9AFC-C214-4973-896B-699D9038DC79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3BE9AFC-C214-4973-896B-699D9038DC79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3BE9AFC-C214-4973-896B-699D9038DC79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E592E6CF-A978-4AA9-B251-74D7D2A17FE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E592E6CF-A978-4AA9-B251-74D7D2A17FE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E592E6CF-A978-4AA9-B251-74D7D2A17FE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E592E6CF-A978-4AA9-B251-74D7D2A17FE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,5 +66,6 @@ Global
 		{048C2086-121D-4E8E-A823-1283FF03146C} = {ED3B88F0-C09C-424E-BB38-2840EEFF2FFE}
 		{0119239D-635F-4D74-B413-0661BF9235A2} = {425CF14B-6057-463B-80A3-0E595ED6808D}
 		{A3BE9AFC-C214-4973-896B-699D9038DC79} = {425CF14B-6057-463B-80A3-0E595ED6808D}
+		{E592E6CF-A978-4AA9-B251-74D7D2A17FE8} = {425CF14B-6057-463B-80A3-0E595ED6808D}
 	EndGlobalSection
 EndGlobal

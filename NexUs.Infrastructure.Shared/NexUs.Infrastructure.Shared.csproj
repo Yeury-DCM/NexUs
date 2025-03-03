@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NexUs.Web\NexUs.Web.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,10 @@
+using NexUs.Infrastructure.Identity;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddIdentityLayer(builder.Configuration);
 
 var app = builder.Build();
 
