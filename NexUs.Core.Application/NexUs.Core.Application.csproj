@@ -10,7 +10,6 @@
     <Folder Include="Interfaces\" />
     <Folder Include="Mapping\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Services\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
 
