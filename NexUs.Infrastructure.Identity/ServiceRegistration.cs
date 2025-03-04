@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Infrastructure.Identity.Contexts;
 using NexUs.Infrastructure.Identity.Entities;
+using NexUs.Infrastructure.Identity.Services;
 
 
 namespace NexUs.Infrastructure.Identity
@@ -30,7 +32,6 @@ namespace NexUs.Infrastructure.Identity
                 });
             }
             #endregion
-
 
             #region Identity
             services.AddIdentityCore<ApplicationUser>()
@@ -70,6 +71,11 @@ namespace NexUs.Infrastructure.Identity
 
             }
             );
+
+            #endregion
+
+            #region Service
+            services.AddTransient<IAccountService, AccountService>();
 
             #endregion
         }

@@ -1,7 +1,6 @@
-﻿
-using NexUs.Core.Application.Dtos.Email;
+﻿using NexUs.Core.Application.Dtos.Email;
 
-namespace NexUs.Core.Application.Services
+namespace NexUs.Core.Application.Interfaces.Services
 {
     public interface IEmailService
     {

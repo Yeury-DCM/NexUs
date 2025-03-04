@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NexUs.Core.Application.Dtos.Email;
-using NexUs.Core.Application.Services;
+using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Web.Models;
 using System.Diagnostics;
 

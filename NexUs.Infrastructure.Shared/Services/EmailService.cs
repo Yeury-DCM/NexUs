@@ -2,8 +2,8 @@
 using MimeKit;
 using MailKit.Net.Smtp;
 using NexUs.Core.Application.Dtos.Email;
-using NexUs.Core.Application.Services;
 using NexUs.Core.Domain.Settings;
+using NexUs.Core.Application.Interfaces.Services;
 
 namespace NexUs.Infrastructure.Shared.Services
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NexUs.Core.Application.Services;
+using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Core.Domain.Settings;
 using NexUs.Infrastructure.Shared.Services;
 

@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using NexUs.Core.Application.Dtos.Account;
-using NexUs.Core.Application.Services;
+using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Infrastructure.Identity.Entities;
 using System.Text;
 
 namespace NexUs.Infrastructure.Identity.Services
 {
-    public class AccountService
+    public class AccountService : IAccountService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -152,7 +152,7 @@ namespace NexUs.Infrastructure.Identity.Services
 
             var user = await _userManager.FindByEmailAsync(request.Email);
 
-            if(user == null)
+            if (user == null)
             {
                 response.HasError = true;
                 response.Error = $"No user registered with {request.Email}";
@@ -195,12 +195,12 @@ namespace NexUs.Infrastructure.Identity.Services
                 response.Error = "An error occurred trying to reset the password.";
                 response.HasError = true;
             }
-         
+
 
             return response;
         }
 
-             
+
 
         private async Task<string> SendVerificationEmailUrl(ApplicationUser user, string origin)
         {
@@ -214,14 +214,14 @@ namespace NexUs.Infrastructure.Identity.Services
 
             return verificationUrl;
         }
-         
+
         private async Task<string> SendForgotPasswordUri(ApplicationUser user, string origin)
         {
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var route = "User/ResetPassword";
             var uri = new Uri(string.Concat($"{origin}", route));
-           
+
             var verificationUrl = QueryHelpers.AddQueryString(uri.ToString(), "token", code);
 
 
