@@ -8,7 +8,8 @@ namespace NexUs.Core.Application.Interfaces.Services
         Task<string> ConfirmAccountAsync(string userId, string token);
         Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
         Task<RegisterResponse> RegisterUser(RegisterRequest request, string origin);
-        Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request);
+        Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request); 
+        Task <UpdateUserResponse> UpdateUserAsync (UpdateUserRequest request);
         Task SingOutAsync();
     }
 }

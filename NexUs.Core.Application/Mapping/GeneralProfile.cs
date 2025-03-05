@@ -14,7 +14,7 @@ namespace NexUs.Core.Application.Mapping
                 .ForMember(x => x.HasError, otp => otp.Ignore())
                 .ReverseMap();
 
-            CreateMap<RegisterRequest, RegisterViewModel>()
+            CreateMap<RegisterRequest, SaveUserViewModel>()
                .ForMember(x => x.Error, otp => otp.Ignore())
                .ForMember(x => x.HasError, otp => otp.Ignore())
                .ReverseMap();
@@ -28,6 +28,12 @@ namespace NexUs.Core.Application.Mapping
              .ForMember(x => x.Error, otp => otp.Ignore())
              .ForMember(x => x.HasError, otp => otp.Ignore())
              .ReverseMap();
+
+            CreateMap<UpdateUserRequest, SaveUserViewModel>()
+               .ForMember(dest => dest.Id, opt => opt.MapFrom( src => src.UserId))
+               .ForMember(x => x.Error, otp => otp.Ignore())
+               .ForMember(x => x.HasError, otp => otp.Ignore())
+               .ReverseMap();
         }
     }
 }

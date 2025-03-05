@@ -9,8 +9,11 @@ using System.Threading.Tasks;
 
 namespace NexUs.Core.Application.ViewModels.Users
 {
-    public class RegisterViewModel
+    public class SaveUserViewModel
     {
+
+        public string Id { get; set; }
+
         [Required(ErrorMessage = "Ingrese el nombre.")]
         [DataType(DataType.Text)]
         public string FirstName { get; set; }

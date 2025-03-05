@@ -33,9 +33,10 @@ namespace NexUs.Core.Application.Services
         public async Task SignOutAsync()
         {
             await _accountService.SingOutAsync();
+
         }
 
-        public async Task<RegisterResponse> RegisterAsync(RegisterViewModel registerViewModel, string origin)
+        public async Task<RegisterResponse> RegisterAsync(SaveUserViewModel registerViewModel, string origin)
         {
             RegisterRequest request = _mapper.Map<RegisterRequest>(registerViewModel);
             RegisterResponse response = await _accountService.RegisterUser(request, origin);
@@ -65,5 +66,14 @@ namespace NexUs.Core.Application.Services
 
             return response;
         }
+
+        public async Task<UpdateUserResponse> UpdateUserAsync (SaveUserViewModel saveUserViewModel)
+        {
+            UpdateUserRequest request = _mapper.Map<UpdateUserRequest>(saveUserViewModel);
+            UpdateUserResponse response = await _accountService.UpdateUserAsync(request);
+
+            return response;
+        }
+
     }
 }

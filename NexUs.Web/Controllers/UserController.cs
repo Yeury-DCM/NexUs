@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using NexUs.Core.Application.Dtos.Account;
 using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Core.Application.ViewModels.Users;
@@ -53,38 +52,49 @@ namespace NexUs.Web.Controllers
             await _userService.SignOutAsync();
             HttpContext.Session.Remove("user");
 
-            return View();
+           return RedirectToAction("Index");
         }
 
         public IActionResult Register()
         {
-            return View(new RegisterViewModel());
+            return View(new SaveUserViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
+        public async Task<IActionResult> Register(SaveUserViewModel saveUserViewModel)
         {
+            ModelState.Remove("Id");
+
             if (!ModelState.IsValid)
             {
-                return View(registerViewModel);
+                return View(saveUserViewModel);
             }
 
             var origin = Request.Headers["origin"];
-            RegisterResponse response = await _userService.RegisterAsync(registerViewModel, origin);
+            RegisterResponse response = await _userService.RegisterAsync(saveUserViewModel, origin);
+
 
             if (response.HasError)
             {
-                registerViewModel.HasError = response.HasError;
-                registerViewModel.Error = response.Error;
-                return View(registerViewModel);
+                saveUserViewModel.HasError = response.HasError;
+                saveUserViewModel.Error = response.Error;
+                return View(saveUserViewModel);
             }
+
+            string imagePath = UploadFile(saveUserViewModel.File, response.UserId);
+
+            saveUserViewModel.ImagePath = imagePath;
+
+            saveUserViewModel.Id = response.UserId;
+
+            UpdateUserResponse updateUserResponse = await _userService.UpdateUserAsync(saveUserViewModel);
 
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
-            string response = await _userService.ConfirmEmailAsync(userId, token);
+            string response = await _userService.ConfirmEmailAsync(userId, token);      
             return View("ConfirmEmail", response);
         }
 
@@ -141,8 +151,10 @@ namespace NexUs.Web.Controllers
             return RedirectToAction("Index");
         }
 
+     
 
-        private string UploadFile(IFormFile file, int id, bool isEditMode = false, string imagePath = "")
+
+        private string UploadFile(IFormFile file, string id, bool isEditMode = false, string imagePath = "")
         {
 
 
@@ -152,7 +164,7 @@ namespace NexUs.Web.Controllers
             }
 
             //Get Directory Path
-            string basePath = $"/images/Doctors/{id}";
+            string basePath = $"/images/Users/{id}";
             string path = $"{Directory.GetCurrentDirectory()}/wwwroot{basePath}";
 
             //Create folder if no exists

@@ -8,8 +8,9 @@ namespace NexUs.Core.Application.Interfaces.Services
         Task<string> ConfirmEmailAsync(string userId, string token);
         Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordViewModel forgotPasswordViewModel, string origin);
         Task<AuthenticationResponse> LoginAsync(LoginViewModel loginViewModel);
-        Task<RegisterResponse> RegisterAsync(RegisterViewModel registerViewModel, string origin);
+        Task<RegisterResponse> RegisterAsync(SaveUserViewModel registerViewModel, string origin);
         Task<ResetPasswordResponse> ResetPasswordAsync (ResetPasswordViewModel resetPasswordViewModel);
+        Task<UpdateUserResponse> UpdateUserAsync(SaveUserViewModel saveUserViewModel);
         Task SignOutAsync();
     }
 }

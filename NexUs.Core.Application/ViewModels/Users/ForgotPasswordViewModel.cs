@@ -9,6 +9,6 @@ namespace NexUs.Core.Application.ViewModels.Users
         [DataType(DataType.EmailAddress)]
         public  string Email { get; set; }
         public bool HasError { get; set; }
-        public string Error { get; set; }
+        public string? Error { get; set; }
     }
 }

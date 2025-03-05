@@ -16,7 +16,8 @@ namespace NexUs.Core.Application.ViewModels.Users
 
 
 
-        [Required(ErrorMessage = "Ingrese la contraseña")]
+        [Required(ErrorMessage = "Ingrese la contraseña.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$", ErrorMessage = "La contraseña debe tener al menos 8 caracteres, incluyendo una minúscula, una mayúscula, un número y un carácter especial.")]
         [DataType(DataType.Password)]
         public  string Password { get; set; }
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using NexUs.Core.Application.Dtos.Account;
 using NexUs.Core.Application.Interfaces.Services;
+using NexUs.Core.Application.ViewModels.Users;
 using NexUs.Infrastructure.Identity.Entities;
 using System.Text;
 
@@ -105,8 +106,10 @@ namespace NexUs.Infrastructure.Identity.Services
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
+
             if (result.Succeeded)
             {
+                response.UserId = user.Id;
                 var verificationUri = await SendVerificationEmailUrl(user, origin);
                 await _emailService.SendAsync(new Core.Application.Dtos.Email.EmailRequest()
                 {
@@ -134,9 +137,9 @@ namespace NexUs.Infrastructure.Identity.Services
             }
 
             token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager.ConfirmEmailAsync(user, token); 
             if (result.Succeeded)
-            {
+            { 
                 return $"Account confirmed for {user.Email}. You can now use the app.";
             }
             else
@@ -160,12 +163,16 @@ namespace NexUs.Infrastructure.Identity.Services
                 return response;
             }
 
-            var verificationUri = await SendForgotPasswordUri(user, origin);
+            string generatedPassword = GeneratePassword(8);
+            var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+            var setPasswordResult = await _userManager.AddPasswordAsync(user, generatedPassword);
+
+          
             await _emailService.SendAsync(new Core.Application.Dtos.Email.EmailRequest()
             {
-                To = user.Email,
+                To = user.Email!,
                 Subject = "Reset password",
-                Body = $"Please reset your password visiting this link: {verificationUri}"
+                Body = $"Hi {user.FirstName}, your new password is: {generatedPassword}"
             });
 
             return response;
@@ -227,6 +234,88 @@ namespace NexUs.Infrastructure.Identity.Services
 
 
             return verificationUrl;
+        }
+
+        public async Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request)
+        {
+            UpdateUserResponse response = new() { HasError = false };
+          
+
+            ApplicationUser? user =await _userManager.FindByIdAsync(request.UserId);
+
+            if(user == null)
+            {
+                response.HasError = true;
+                response.Error = "No se encontró el usuario";
+                return response;
+            }
+
+
+            
+
+            user.ImagePath = request.ImagePath;
+
+            if (!user.EmailConfirmed)
+            {
+                var resultUpdateImage = await _userManager.UpdateAsync(user);
+                if (!resultUpdateImage.Succeeded)
+                {
+                    response.HasError = true;
+                    response.Error = "An error ocurred updating the user profile photo.";
+                }
+
+                return response;
+            }
+
+
+            user.UserName = request.UserName;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.Email = request.Email;          
+            user.PhoneNumber = request.PhoneNumber;
+
+            if (request.Password != null)
+            {
+                var resultRemovePassword = await _userManager.RemovePasswordAsync(user);
+                var resultAddPassword = await _userManager.AddPasswordAsync(user, request.Password);
+
+                if (!resultAddPassword.Succeeded || !resultRemovePassword.Succeeded)
+                {
+                    response.HasError = true;
+                    response.Error = "An error ocurred updating the password.";
+                }
+            }
+
+            var resultUpdate = await _userManager.UpdateAsync(user);
+
+            if (!resultUpdate.Succeeded)
+            {
+                response.HasError = true;
+                response.Error = "An error ocurred updating the user.";
+            }
+
+
+            return response;
+        }
+
+       
+
+        private string GeneratePassword(int requiredLength)
+        {
+            string password = "";
+            Random rnd = new Random();
+
+
+            while (password.Length < requiredLength)
+            {
+                password += ((char)rnd.Next(97, 123)); // 'a' - 'z'
+                password += ((char)rnd.Next(48, 57)); // '0' - '9'
+                password += ((char)rnd.Next(65, 91));// 'A' - 'Z'
+                password +=((char)rnd.Next(33, 48));// Special character
+            }
+
+
+            return password;
         }
     }
 
