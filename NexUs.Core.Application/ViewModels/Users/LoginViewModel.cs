@@ -6,11 +6,11 @@ namespace NexUs.Core.Application.ViewModels.Users
     {
         [Required(ErrorMessage = "Ingrese el nombre de usuario")]
         [DataType(DataType.Text)]
-        public required string UserName { get; set; }
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "Ingrese la contraseña")]
         [DataType(DataType.Password)]
-        public required string Password { get; set; }
+        public string Password { get; set; }
 
         public bool HasError { get; set; }
         public string? Error { get; set; }

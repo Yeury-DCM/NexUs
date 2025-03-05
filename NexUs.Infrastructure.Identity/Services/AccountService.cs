@@ -99,6 +99,7 @@ namespace NexUs.Infrastructure.Identity.Services
                 UserName = request.UserName.Trim(),
                 FirstName = request.FirstName.Trim(),
                 LastName = request.LastName.Trim(),
+                PhoneNumber = request.PhoneNumber
 
             };
 
@@ -111,7 +112,7 @@ namespace NexUs.Infrastructure.Identity.Services
                 {
                     To = user.Email,
                     Subject = "One last step: Verify your email",
-                    Body = $"Please confirm your account visiting this link {verificationUri}"
+                    Body = $"Please confirm your account visiting this link:\n {verificationUri}"
                 });
             }
             else
@@ -207,9 +208,9 @@ namespace NexUs.Infrastructure.Identity.Services
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var route = "User/ConfirmEmail";
-            var uri = new Uri(string.Concat($"{origin}", route));
+            var uri = new Uri($"{origin.TrimEnd('/')}/{route}");
             var verificationUrl = QueryHelpers.AddQueryString(uri.ToString(), "userId", user.Id);
-            verificationUrl = QueryHelpers.AddQueryString(uri.ToString(), "token", code);
+            verificationUrl = QueryHelpers.AddQueryString(verificationUrl, "token", code);
 
 
             return verificationUrl;
@@ -220,9 +221,9 @@ namespace NexUs.Infrastructure.Identity.Services
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var route = "User/ResetPassword";
-            var uri = new Uri(string.Concat($"{origin}", route));
+            var uri = new Uri($"{origin.TrimEnd('/')}/{route}");
 
-            var verificationUrl = QueryHelpers.AddQueryString(uri.ToString(), "token", code);
+            var verificationUrl = QueryHelpers.AddQueryString(uri.ToString(), "Token", code);
 
 
             return verificationUrl;

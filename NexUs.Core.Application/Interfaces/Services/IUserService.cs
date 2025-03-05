@@ -9,6 +9,7 @@ namespace NexUs.Core.Application.Interfaces.Services
         Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordViewModel forgotPasswordViewModel, string origin);
         Task<AuthenticationResponse> LoginAsync(LoginViewModel loginViewModel);
         Task<RegisterResponse> RegisterAsync(RegisterViewModel registerViewModel, string origin);
-        Task SignOutAsync(ResetPasswordViewModel forgotPasswordViewModel);
+        Task<ResetPasswordResponse> ResetPasswordAsync (ResetPasswordViewModel resetPasswordViewModel);
+        Task SignOutAsync();
     }
 }

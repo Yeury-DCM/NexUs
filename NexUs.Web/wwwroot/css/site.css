@@ -19,4 +19,8 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #1c1c1c;
+}
+a{
+    text-decoration: none;
 }

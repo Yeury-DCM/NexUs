@@ -15,9 +15,10 @@ namespace NexUs.Core.Application.Services
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public UserService(IAccountService accountService)
+        public UserService(IAccountService accountService, IMapper mapper)
         {
             _accountService = accountService;
+            _mapper = mapper;
         }
 
         public async Task<AuthenticationResponse> LoginAsync(LoginViewModel loginViewModel)
@@ -29,7 +30,7 @@ namespace NexUs.Core.Application.Services
         }
 
          
-        public async Task SignOutAsync(ResetPasswordViewModel forgotPasswordViewModel)
+        public async Task SignOutAsync()
         {
             await _accountService.SingOutAsync();
         }
@@ -57,5 +58,12 @@ namespace NexUs.Core.Application.Services
 
         }
 
+        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel resetPasswordViewModel)
+        {
+            ResetPasswordRequest request = _mapper.Map<ResetPasswordRequest>(resetPasswordViewModel);
+            ResetPasswordResponse response = await _accountService.ResetPasswordAsync(request);
+
+            return response;
+        }
     }
 }

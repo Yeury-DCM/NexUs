@@ -1,12 +1,17 @@
 using NexUs.Infrastructure.Identity;
 using NexUs.Infrastructure.Shared;
+using NexUs.Core.Application;
+;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddIdentityLayer(builder.Configuration);
 builder.Services.AddSharedInfrastructure(builder.Configuration);
-
+builder.Services.AddApplicationLayer();
+builder.Services.AddSession();
+    
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,8 +29,10 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseSession();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=User}/{action=Index}/{id?}");
 
 app.Run();
