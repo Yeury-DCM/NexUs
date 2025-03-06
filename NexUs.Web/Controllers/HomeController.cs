@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NexUs.Core.Application.Dtos.Email;
 using NexUs.Core.Application.Interfaces.Services;
+using NexUs.Core.Application.Services;
+using NexUs.Core.Application.ViewModels.Posts;
 using NexUs.Web.Models;
 using System.Diagnostics;
 
@@ -10,30 +12,41 @@ namespace NexUs.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IEmailService _emailService;
+        private readonly IPostService _postService;
 
-  
-        
 
-        public HomeController(ILogger<HomeController> logger, IEmailService emailService)
+        public HomeController(IPostService postService, ILogger<HomeController> logger, IEmailService emailService)
         {
             _logger = logger;
             _emailService = emailService;
+            _postService = postService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<PostViewModel> posts = await _postService.GetAllViewModel();
+            return View(posts);
         }
+
+        public  IActionResult AddPost()
+        {
+            return View("SavePost");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPost(SavePostViewModel savePostViewModel)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View("SavePost", savePostViewModel);
+            }
+            return View("SavePost");
+        }
+
 
         public IActionResult Privacy()
         {
 
-            _emailService.SendAsync(new EmailRequest
-            {
-                To = "yeury.dcm2406@gmail.com",
-                Subject = "TestMessage",
-                Body = "<h1>Felicidades!! </h1> <p>Pudiste Configurar correcetamente el <b>envío de correos!!</b></p>"
-            });
             return View();
         }
 

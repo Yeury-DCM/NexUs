@@ -1,7 +1,10 @@
 ﻿
 using AutoMapper;
 using NexUs.Core.Application.Dtos.Account;
+using NexUs.Core.Application.ViewModels.Comments;
+using NexUs.Core.Application.ViewModels.Posts;
 using NexUs.Core.Application.ViewModels.Users;
+using NexUs.Core.Domain.Entities;
 
 namespace NexUs.Core.Application.Mapping
 {
@@ -29,6 +32,19 @@ namespace NexUs.Core.Application.Mapping
                .ForMember(x => x.Error, otp => otp.Ignore())
                .ForMember(x => x.HasError, otp => otp.Ignore())
                .ReverseMap();
+
+            CreateMap<PostViewModel, Post>()
+                .ReverseMap();
+
+            CreateMap<SavePostViewModel, Post >()
+                .ReverseMap();
+
+            CreateMap<CommentViewModel, Comment>()
+                .ReverseMap();
+
+            CreateMap<SaveCommentViewModel, Comment>()
+                .ReverseMap();
+            
         }
     }
 }

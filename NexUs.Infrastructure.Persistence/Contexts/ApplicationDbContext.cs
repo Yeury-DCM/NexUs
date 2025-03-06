@@ -19,11 +19,24 @@ namespace NexUs.Infrastructure.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Post>()
-            //    .HasOne<ApplicationUser>()
-            //    .WithMany(a => a.Posts)
-            //    .HasForeignKey(p => p.UserId);
-                
+            #region Tables
+            modelBuilder.Entity<Post>().ToTable("Posts");
+            modelBuilder.Entity<Comment>().ToTable("Comments");
+            #endregion
+
+            #region relations
+
+            #endregion
+
+            #region Navegation
+            modelBuilder.Entity<Post>()
+                .Navigation(p => p.Comments)
+                .AutoInclude();
+            #endregion
+
+
         }
+
+
     }
 }

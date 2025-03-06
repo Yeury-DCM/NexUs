@@ -44,7 +44,7 @@ namespace NexUs.Web.Controllers
                 return View(loginViewModel);
             }
 
-            return View();
+          
         }
 
         public async Task<IActionResult> LogOut()

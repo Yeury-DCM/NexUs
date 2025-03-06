@@ -11,5 +11,7 @@ namespace NexUs.Core.Application.Interfaces.Services
         Task<RegisterResponse> RegisterAsync(SaveUserViewModel registerViewModel, string origin);
         Task<UpdateUserResponse> UpdateUserAsync(SaveUserViewModel saveUserViewModel);
         Task SignOutAsync();
+
+        Task<UserViewModel> GetById(string id);
     }
 }

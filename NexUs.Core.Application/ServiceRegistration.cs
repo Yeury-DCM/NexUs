@@ -11,10 +11,13 @@ namespace NexUs.Core.Application
     {
         public static void AddApplicationLayer(this IServiceCollection serviceCollection)
         {
-
+            
             serviceCollection.AddAutoMapper(Assembly.GetExecutingAssembly());
             serviceCollection.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             serviceCollection.AddTransient<IUserService, UserService>();
+            serviceCollection.AddTransient<ICommentService, CommentService>();
+            serviceCollection.AddTransient<IPostService, PostService>();
+
         }
     }
 }

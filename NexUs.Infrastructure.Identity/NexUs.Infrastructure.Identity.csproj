@@ -24,4 +24,8 @@
     <ProjectReference Include="..\NexUs.Core.Domain\NexUs.Core.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

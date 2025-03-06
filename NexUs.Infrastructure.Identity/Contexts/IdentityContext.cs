@@ -36,6 +36,11 @@ namespace NexUs.Infrastructure.Identity.Contexts
                 .HasMany<Post>(a => a.Posts)
                 .WithOne()
                 .HasForeignKey(p => p.UserId);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany<Comment>(a => a.Comments)
+                .WithOne()
+                .HasForeignKey(c => c.UserId);
             #endregion
 
         }

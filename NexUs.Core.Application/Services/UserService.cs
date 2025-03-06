@@ -67,5 +67,9 @@ namespace NexUs.Core.Application.Services
             return response;
         }
 
+        public Task<UserViewModel> GetById(string id)
+        {
+            return _accountService.GetUserById(id);
+        }
     }
 }

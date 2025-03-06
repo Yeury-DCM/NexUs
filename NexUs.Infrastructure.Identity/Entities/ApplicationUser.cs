@@ -11,6 +11,7 @@ namespace NexUs.Infrastructure.Identity.Entities
 
         public ICollection<ApplicationUser> Friends { get; set; }
         public ICollection<Post> Posts { get; set; }
-
+        
+        public ICollection<Comment> Comments { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using Azure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,7 @@ namespace NexUs.Infrastructure.Identity.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailService;
+        private readonly IMapper _mapper;
 
 
         public AccountService(IEmailService emailService, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
@@ -273,6 +275,21 @@ namespace NexUs.Infrastructure.Identity.Services
 
 
             return password;
+        }
+
+        public async Task<UserViewModel> GetUserById(string id)
+        {
+            ApplicationUser? user = await _userManager.FindByIdAsync(id);
+            UserViewModel userViewModel = new()
+            {
+                UserName = user.UserName,
+                LastName = user.LastName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                ImagePath = user.ImagePath,
+                PhoneNumber = user.PhoneNumber
+            };
+            return userViewModel;
         }
     }
 

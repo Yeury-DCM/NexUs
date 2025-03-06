@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NexUs.Core.Domain.Result;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,11 +10,11 @@ namespace NexUs.Core.Application.Interfaces.Repositories
     public interface IGenericRepository <T> where T : class
     {
 
-        Task<IQueryable<T>> GetAllAsync();
-        Task<T?> GetByIdAsync(int Id);
-        Task<T> AddAsync(T entity);
-        Task<bool> UpdateAsync(T entity);
-        Task<bool> DeleteAsync(int id);
+        Task<OperationResult<IQueryable<T>>> GetAllAsync();
+        Task<OperationResult<T>> GetByIdAsync(int Id);
+        Task<OperationResult<T>> AddAsync(T entity);
+        Task<OperationResult<T>> UpdateAsync(T entity);
+        Task<OperationResult<T>> DeleteAsync(int id);
 
     }
 }

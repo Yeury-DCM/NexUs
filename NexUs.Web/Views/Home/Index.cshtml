@@ -1,8 +1,115 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@using NexUs.Core.Application.ViewModels.Posts
+@using NexUs.Core.Application.ViewModels.Comments
+@using System.Text      // Para usar StringBuilder
+@using Microsoft.AspNetCore.Html   // Para usar HtmlString
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@model List<PostViewModel>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            @foreach (var post in Model)
+            {
+                <div class="card text-white p-3 mb-4 shadow-lg-0 col-lg-8">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="@post.User.ImagePath" alt="Usuario" class="profile-img me-3">
+                        <div>
+                            <h6 class="mb-0">@post.User.FirstName @post.User.LastName</h6>
+                            <small class="text-muted">@post.DateTime.ToString("g")</small>
+                        </div>
+                    </div>
+                    <p>@post.Content</p>
+
+                    @if (!string.IsNullOrEmpty(post.ImagePath))
+                    {
+                        <div class="ratio ratio-1x1 post-img">
+                            <img src="@post.ImagePath" class="img-fluid rounded rounded-1" alt="Imagen del post">
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(post.VideoPath))
+                    {
+                        <div class="ratio ratio-16x9">
+                            <iframe src="@post.VideoPath" allowfullscreen></iframe>
+                        </div>
+                    }
+
+                    <!-- Botón para mostrar/ocultar comentarios -->
+                    <button class="btn btn-outline-light btn-sm mt-3" data-bs-toggle="collapse" data-bs-target="#commentsSection_@post.Id">
+                        Ver comentarios
+                    </button>
+
+                    <!-- Sección de comentarios -->
+                    <div id="commentsSection_@post.Id" class="collapse mt-3">
+                        <h6 class="text-light">Comentarios</h6>
+                        @foreach (var comment in post.Comments)
+                        {
+                            @* Solo mostrar los comentarios que no tengan padre *@
+                            @if (comment.ParentCommentId == 0)
+                            {
+                                @DisplayComment(comment, post.Id, 0)  @* Se inicia la recursión con nivel 0 *@
+                            }
+                        }
+
+                        <!-- Formulario para agregar un nuevo comentario -->
+                        <form asp-controller="Comment" asp-action="AddComment" method="post" class="mt-3">
+                            <input type="hidden" name="postId" value="@post.Id" />
+                            <div class="form-group">
+                                <textarea name="content" class="form-control" rows="3" placeholder="Escribe un comentario..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-2">Comentar</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
+@* Método recursivo para mostrar comentarios y respuestas *@
+@functions {
+    public IHtmlContent DisplayComment(CommentViewModel comment, int postId, int level)
+    {
+        var htmlContent = new StringBuilder();
+        int indent = level * 25;  // Incrementa la indentación en cada nivel
+
+        htmlContent.Append($@"
+            <div class='comment mb-3' style='margin-left: {indent}px; padding-left: 10px; border-left: 2px solid rgba(255, 255, 255, 0.3);'> <!-- Línea de conexión entre respuestas -->
+                <div class='d-flex align-items-center'>
+                    <img src='{comment.User.ImagePath}' alt='Usuario' class='profile-img me-3' style='width: 40px; height: 40px;'>
+                    <div>
+                        <h6 class='mb-0'>{comment.User.FirstName} {comment.User.LastName}</h6>
+                        <p>{comment.Content}</p>
+                    </div>
+                </div>
+
+                <!-- Botón para responder -->
+                <button class='btn btn-sm mb-2 text-light' data-bs-toggle='collapse' data-bs-target='#responseForm_{comment.Id}'>Responder</button>
+
+                <!-- Formulario para responder al comentario -->
+                <div id='responseForm_{comment.Id}' class='collapse mt-2'>
+                    <form action='/Comment/AddComment' method='post' class='mt-3'>
+                        <input type='hidden' name='postId' value='{postId}' />
+                        <input type='hidden' name='parentCommentId' value='{comment.Id}' />
+                        <div class='form-group'>
+                            <textarea name='content' class='form-control' rows='2' placeholder='Escribe una respuesta...' required></textarea>
+                        </div>
+                        <button type='submit' class='btn btn-primary mt-2'>Responder</button>
+                    </form>
+                </div>
+            ");
+
+        // Recursivamente mostrar respuestas con un nivel de indentación mayor
+        foreach (var answer in comment.Answers)
+        {
+            htmlContent.Append(DisplayComment(answer, postId, level + 1)); // Incrementamos el nivel
+        }
+
+        htmlContent.Append("</div>");
+
+        return new HtmlString(htmlContent.ToString());
+    }
+}

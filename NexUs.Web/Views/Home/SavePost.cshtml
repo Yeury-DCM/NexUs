@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Crear Publicación";
+}
+@using NexUs.Core.Application.ViewModels.Posts
+
+@model SavePostViewModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-white p-4 shadow-lg">
+                <h4 class="mb-3">Crear Publicación</h4>
+
+                <form asp-controller="Home" asp-action="AddPost" method="post">
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- Área de texto para el contenido -->
+                    <div class="form-group mb-3">
+                        <textarea asp-for="Content" class="form-control bg-dark text-light" rows="4" placeholder="¿Qué estás pensando?" required></textarea>
+                    </div>
+
+                    <!-- Selector de Imagen -->
+                    <div class="form-group mb-3">
+                        <label class="text-light">Agregar imagen (opcional)</label>
+                        <input type="file" asp-for = "ImageFile" id="imageInput" class="form-control bg-dark text-light" accept="image/*">
+
+                        <input type="hidden" asp-for="ImagePath" />
+                        <div id="imagePreviewContainer" class="mt-2" style="display: none;">
+                            <img id="imagePreview" class="img-fluid rounded" style="max-height: 300px;">
+                        </div>
+                    </div>
+
+                    <!-- Campo para URL de YouTube -->
+                    <div class="form-group mb-3">
+                        <label class="text-light">Agregar video de YouTube (opcional)</label>
+                        <input type="text" id="youtubeUrl" asp-for="VideoPath" class="form-control bg-dark text-light" placeholder="Pega el enlace de YouTube aquí">
+                        <div id="youtubePreviewContainer" class="mt-2" style="display: none;">
+                            <iframe id="youtubePreview" class="w-100 rounded" style="max-height: 300px;" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <!-- Botón para publicar -->
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Publicar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para previsualizar imagen y video de YouTube -->
+<script>
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('imagePreview').src = e.target.result;
+                document.getElementById('imagePreviewContainer').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('youtubeUrl').addEventListener('input', function () {
+        let url = this.value;
+        let videoId = extractYouTubeID(url);
+        if (videoId) {
+            document.getElementById('youtubePreview').src = "https://www.youtube.com/embed/" + videoId;
+            document.getElementById('youtubePreviewContainer').style.display = 'block';
+        } else {
+            document.getElementById('youtubePreviewContainer').style.display = 'none';
+        }
+    });
+
+    function extractYouTubeID(url) {
+        let match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+        return match ? match[1] : null;
+    }
+</script>

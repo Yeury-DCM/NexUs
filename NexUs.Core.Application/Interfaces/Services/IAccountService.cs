@@ -1,4 +1,5 @@
 ﻿using NexUs.Core.Application.Dtos.Account;
+using NexUs.Core.Application.ViewModels.Users;
 
 namespace NexUs.Core.Application.Interfaces.Services
 {
@@ -10,5 +11,7 @@ namespace NexUs.Core.Application.Interfaces.Services
         Task<RegisterResponse> RegisterUser(RegisterRequest request, string origin);
         Task <UpdateUserResponse> UpdateUserAsync (UpdateUserRequest request);
         Task SingOutAsync();
+
+        Task<UserViewModel> GetUserById(string id);
     }
 }
