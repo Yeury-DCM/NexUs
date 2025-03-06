@@ -154,12 +154,12 @@ namespace NexUs.Infrastructure.Identity.Services
             ForgotPasswordResponse response = new();
             response.HasError = false;
 
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByNameAsync(request.Username);
 
             if (user == null)
             {
                 response.HasError = true;
-                response.Error = $"No user registered with {request.Email}";
+                response.Error = $"No user registered with {request.Username}";
                 return response;
             }
 
@@ -176,38 +176,7 @@ namespace NexUs.Infrastructure.Identity.Services
             });
 
             return response;
-        }
-
-        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordRequest request)
-        {
-            ResetPasswordResponse response = new()
-            {
-                HasError = false,
-            };
-
-
-            var user = await _userManager.FindByEmailAsync(request.Email);
-
-            if (user == null)
-            {
-                response.HasError = true;
-                response.Error = $"No user registered with {request.Email}";
-                return response;
-            }
-
-            var token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
-
-            var result = await _userManager.ResetPasswordAsync(user, token, request.Password);
-            if (!result.Succeeded)
-            {
-                response.Error = "An error occurred trying to reset the password.";
-                response.HasError = true;
-            }
-
-
-            return response;
-        }
-
+        }  
 
 
         private async Task<string> SendVerificationEmailUrl(ApplicationUser user, string origin)
@@ -223,18 +192,6 @@ namespace NexUs.Infrastructure.Identity.Services
             return verificationUrl;
         }
 
-        private async Task<string> SendForgotPasswordUri(ApplicationUser user, string origin)
-        {
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "User/ResetPassword";
-            var uri = new Uri($"{origin.TrimEnd('/')}/{route}");
-
-            var verificationUrl = QueryHelpers.AddQueryString(uri.ToString(), "Token", code);
-
-
-            return verificationUrl;
-        }
 
         public async Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request)
         {

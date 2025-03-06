@@ -1,6 +1,7 @@
 using NexUs.Infrastructure.Identity;
 using NexUs.Infrastructure.Shared;
 using NexUs.Core.Application;
+using NexUs.Infrastructure.Persistence;
 ;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddIdentityLayer(builder.Configuration);
 builder.Services.AddSharedInfrastructure(builder.Configuration);
+builder.Services.AddPersistenceLayer(builder.Configuration);
 builder.Services.AddApplicationLayer();
 builder.Services.AddSession();
     

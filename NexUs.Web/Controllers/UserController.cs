@@ -125,34 +125,7 @@ namespace NexUs.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult ResetPasswordAsync(string token)
-        {
-            return View(new ResetPasswordViewModel { Token = token});
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordViewModel resetPasswordViewModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(resetPasswordViewModel);
-            }
-
-            
-            ResetPasswordResponse response = await _userService.ResetPasswordAsync(resetPasswordViewModel);
-
-            if (response.HasError)
-            {
-                resetPasswordViewModel.HasError = response.HasError;
-                resetPasswordViewModel.Error = response.Error;
-                return View(resetPasswordViewModel);
-            }
-
-            return RedirectToAction("Index");
-        }
-
-     
-
+      
 
         private string UploadFile(IFormFile file, string id, bool isEditMode = false, string imagePath = "")
         {

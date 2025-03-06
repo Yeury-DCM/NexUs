@@ -7,7 +7,7 @@ namespace NexUs.Core.Application.ViewModels.Users
     {
         [Required(ErrorMessage = "Ingrese el correo electrónico")]
         [DataType(DataType.EmailAddress)]
-        public  string Email { get; set; }
+        public  string Username { get; set; }
         public bool HasError { get; set; }
         public string? Error { get; set; }
     }

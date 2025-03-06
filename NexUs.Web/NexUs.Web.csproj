@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NexUs.Core.Application\NexUs.Core.Application.csproj" />
     <ProjectReference Include="..\NexUs.Infrastructure.Identity\NexUs.Infrastructure.Identity.csproj" />
+    <ProjectReference Include="..\NexUs.Infrastructure.Persistence\NexUs.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\NexUs.Infrastructure.Shared\NexUs.Infrastructure.Shared.csproj" />
   </ItemGroup>
 

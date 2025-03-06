@@ -59,14 +59,6 @@ namespace NexUs.Core.Application.Services
 
         }
 
-        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel resetPasswordViewModel)
-        {
-            ResetPasswordRequest request = _mapper.Map<ResetPasswordRequest>(resetPasswordViewModel);
-            ResetPasswordResponse response = await _accountService.ResetPasswordAsync(request);
-
-            return response;
-        }
-
         public async Task<UpdateUserResponse> UpdateUserAsync (SaveUserViewModel saveUserViewModel)
         {
             UpdateUserRequest request = _mapper.Map<UpdateUserRequest>(saveUserViewModel);

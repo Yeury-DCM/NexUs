@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using NexUs.Core.Domain.Entities;
 using NexUs.Infrastructure.Identity.Entities;
 using System;
 using System.Collections.Generic;
@@ -22,12 +23,21 @@ namespace NexUs.Infrastructure.Identity.Contexts
         {
             base.OnModelCreating(builder);
 
+            #region Properties
             builder.HasDefaultSchema("Identity");
             builder.Entity<ApplicationUser>().ToTable("Users");
             builder.Entity<IdentityRole>().ToTable("Roles");
             builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
             builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogin");
-           
+            #endregion
+
+            #region Relationships
+            builder.Entity<ApplicationUser>()
+                .HasMany<Post>(a => a.Posts)
+                .WithOne()
+                .HasForeignKey(p => p.UserId);
+            #endregion
+
         }
     }
 }
