@@ -25,7 +25,12 @@ namespace NexUs.Infrastructure.Persistence.Contexts
             #endregion
 
             #region relations
-
+            modelBuilder.Entity<Post>()
+                .HasMany(p => p.Comments)
+                .WithOne(p => p.Post)
+                .HasForeignKey(c => c.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
             #endregion
 
             #region Navegation

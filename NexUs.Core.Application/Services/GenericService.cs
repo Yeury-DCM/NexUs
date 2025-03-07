@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 namespace NexUs.Core.Application.Services
 {
     public class GenericService<ViewModel, SaveViewModel, Entity> : IGenericService<ViewModel, SaveViewModel, Entity>
-        where ViewModel : class
+        where ViewModel : class, IHasId
         where Entity : class
-        where SaveViewModel : class
+        where SaveViewModel : class, IHasId
     {
         private readonly IGenericRepository<Entity> _repository;
         private readonly IMapper _mapper;
@@ -45,19 +45,27 @@ namespace NexUs.Core.Application.Services
             return _mapper.Map<List<ViewModel>>(entities);
         }
 
-        public Task<ViewModel?> GetById(int id)
+        public async Task<ViewModel?> GetById(int id)
         {
-            throw new NotImplementedException();
+            var result = await _repository.GetByIdAsync(id);
+            return _mapper.Map<ViewModel>(result.Data!);
         }
 
-        public Task<SaveViewModel> GetByIdSaveViewModel(int id)
+        public async Task<SaveViewModel> GetByIdSaveViewModel(int id)
         {
-            throw new NotImplementedException();
+            var result = await _repository.GetByIdAsync(id);
+            return _mapper.Map<SaveViewModel>(result.Data!);
         }
 
-        public Task<bool> Update(SaveViewModel viewModel)
+        public async Task<bool> Update(SaveViewModel viewModel)
         {
-            throw new NotImplementedException();
+            var getByIdResult = await _repository.GetByIdAsync(viewModel.Id);
+            Entity entity = getByIdResult.Data!;
+            entity = _mapper.Map(viewModel, entity);
+            var updateResult = await _repository.UpdateAsync(entity);
+            return updateResult.IsSucess;
+
+          
         }
     }
 }

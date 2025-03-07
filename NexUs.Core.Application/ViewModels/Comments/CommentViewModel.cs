@@ -1,9 +1,10 @@
-﻿using NexUs.Core.Application.ViewModels.Users;
+﻿using NexUs.Core.Application.Interfaces.Services;
+using NexUs.Core.Application.ViewModels.Users;
 using NexUs.Core.Domain.Entities;
 
 namespace NexUs.Core.Application.ViewModels.Comments
 {
-    public class CommentViewModel
+    public class CommentViewModel : IHasId
     {
         public int Id { get; set; }
         public string Content { get; set; }

@@ -1,4 +1,5 @@
-﻿using NexUs.Core.Application.ViewModels.Comments;
+﻿using NexUs.Core.Application.Interfaces.Services;
+using NexUs.Core.Application.ViewModels.Comments;
 using NexUs.Core.Application.ViewModels.Users;
 using NexUs.Core.Domain.Entities;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NexUs.Core.Application.ViewModels.Posts
 {
-    public class PostViewModel
+    public class PostViewModel : IHasId
     {
         public int Id { get; set; }
         public string Content { get; set; }

@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Crear Publicación";
+    bool editMode = Model != null && Model.Id != 0 ? true : false;
 }
 @using NexUs.Core.Application.ViewModels.Posts
 
@@ -9,22 +10,24 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card text-white p-4 shadow-lg">
-                <h4 class="mb-3">Crear Publicación</h4>
+                <h4 class="mb-3">@(editMode? "Editando" : "Creando") Publicación</h4>
 
-                <form asp-controller="Home" asp-action="AddPost" method="post">
+                <form asp-controller="Home" asp-action="@(editMode? "Edit" : "Add")" method="post" enctype="multipart/form-data">
+
                     <input type="hidden" asp-for="Id" />
 
                     <!-- Área de texto para el contenido -->
                     <div class="form-group mb-3">
                         <textarea asp-for="Content" class="form-control bg-dark text-light" rows="4" placeholder="¿Qué estás pensando?" required></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
                     </div>
 
                     <!-- Selector de Imagen -->
                     <div class="form-group mb-3">
-                        <label class="text-light">Agregar imagen (opcional)</label>
-                        <input type="file" asp-for = "ImageFile" id="imageInput" class="form-control bg-dark text-light" accept="image/*">
+                        <label asp-for="ImageFile" class="form-label">Añadir imagen (opcional)</label>
+                        <input asp-for="ImageFile" type="file" class="form-control form-control-lg text-light" style="background-color: #444;">
 
-                        <input type="hidden" asp-for="ImagePath" />
+                     
                         <div id="imagePreviewContainer" class="mt-2" style="display: none;">
                             <img id="imagePreview" class="img-fluid rounded" style="max-height: 300px;">
                         </div>
@@ -39,8 +42,12 @@
                         </div>
                     </div>
 
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="UserId" />
+                    <input type="hidden" asp-for="ImagePath" />
+                    <input type="hidden" asp-for="DateTime" />
                     <!-- Botón para publicar -->
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Publicar</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Guardar</button>
                 </form>
             </div>
         </div>

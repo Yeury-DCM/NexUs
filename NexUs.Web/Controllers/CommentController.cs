@@ -20,13 +20,15 @@ namespace NexUs.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment (int postId, string content, int parentCommentId)
         {
+            ModelState.Remove("Id");
             SaveCommentViewModel viewModel = new()
             {
                 PostId = postId,
                 Content = content,
                 UserId = "861d379c-89d0-4d5c-beb3-50757b3b19d5",
-                ParentCommentId = parentCommentId
-                
+                ParentCommentId = parentCommentId == 0? null : parentCommentId
+
+
             };
 
             await _commentService.Add(viewModel);
