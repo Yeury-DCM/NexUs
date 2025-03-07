@@ -1,23 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Home"; 
+    ViewData["Title"] = "Amigos";
 }
 @using NexUs.Core.Application.ViewModels.Posts
 @using NexUs.Core.Application.ViewModels.Comments
+@using NexUs.Core.Application.ViewModels.Friends
+@using NexUs.Core.Application.ViewModels.Users
 @using System.Text
 @using Microsoft.AspNetCore.Html
 
-@model List<PostViewModel>
+@model FriendsAndPostsViewModel
 
 <div class="container mt-5">
-    <div class="row justify-content-center">
+    <div class="row">
+        <!-- Columna izquierda: Posts de amigos -->
         <div class="col-md-8">
-            <!-- Botón para añadir una nueva publicación alineado a la izquierda -->
-
-            <div class="d-flex justify-content-center mb-3 px-4">
-                <a asp-action = "Add" asp-controller ="Home" class="btn btn-outline-info">Añadir publicación</a>
-            </div>
-
-            @foreach (var post in Model)
+            @foreach (var post in Model.Posts)
             {
                 <div class="card text-white p-3 mb-4 shadow-lg-0 col-lg-8">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -27,25 +24,6 @@
                                 <h6 class="mb-0">@post.User.FirstName @post.User.LastName</h6>
                                 <small class="text-muted">@post.DateTime.ToString("g")</small>
                             </div>
-                        </div>
-
-                        <!-- Menú desplegable de opciones -->
-                        <div class="dropdown">
-                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                &#8226;&#8226;&#8226;
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a asp-controller="Home" asp-action="Edit" asp-route-id="@post.Id" type="button" class="dropdown-item text-dark">Editar</a>
-
-                                </li>
-                                <li>
-                                    <a href="#" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-post-id="@post.Id">
-                                        Borrar
-                                    </a>
-                                </li>
-
-                            </ul>
                         </div>
                     </div>
 
@@ -63,10 +41,7 @@
                         string videoId = @ExtractYouTubeVideoId(post.VideoPath);
 
                         <div class="ratio ratio-16x9">
-
-
                             <iframe class="mb-3" width="100%" height="100%" src="https://www.youtube.com/embed/@videoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
                         </div>
                     }
 
@@ -92,30 +67,75 @@
                             <div class="form-group">
                                 <textarea name="content" class="form-control" rows="3" placeholder="Escribe un comentario..." required></textarea>
                             </div>
+                            <input type="hidden" name="commentFromAFriend" value="true" />
+
+                            
                             <button type="submit" class="btn mt-2" style="background-color: #008f89; color: white;">Comentar</button>
                         </form>
                     </div>
                 </div>
             }
         </div>
+
+        <!-- Columna derecha: Lista de amigos -->
+        <div class="col-md-4">
+            <div class="card text-white p-3 mb-4 shadow-lg-0">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Mis Amigos</h5>
+                    <a asp-controller="Friends" asp-action="AddFriend" class="btn btn-sm" style="background-color: #008f89; color: white;">
+                        <i class="bi bi-person-plus"></i> Agregar Amigo
+                    </a>
+                </div>
+
+                <div class="friends-list">
+                    @if (Model.Friends != null && Model.Friends.Any())
+                    {
+                        @foreach (var friend in Model.Friends)
+                        {
+                            <div class="d-flex justify-content-between align-items-center p-2 mb-2 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <img src="@friend.ImagePath" alt="@friend.FirstName" class="profile-img me-3">
+                                    <div>
+                                        <h6 class="mb-0">@friend.FirstName @friend.LastName</h6>
+                                        <small class="text-muted">@friend.UserName</small>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteFriendModal" data-friend-id="@friend.Id">
+                                        <i class="bi bi-person-x"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center p-3">
+                            <p>No tienes amigos agregados aún.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Modal de confirmación de eliminación -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+<!-- Modal de confirmación de eliminación de amigo -->
+<div class="modal fade" id="confirmDeleteFriendModal" tabindex="-1" aria-labelledby="confirmDeleteFriendModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar eliminación</h5>
+                <h5 class="modal-title" id="confirmDeleteFriendModalLabel">Confirmar eliminación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.
+                ¿Estás seguro de que deseas eliminar a esta persona de tu lista de amigos?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form id="deletePostForm" asp-controller="Home" asp-action="Delete" method="post">
-                    <input type="hidden" id="postIdToDelete" name="id" />
+                <form id="deleteFriendForm" asp-controller="Friend" asp-action="RemoveFriend" method="post">
+                    <input type="hidden" id="friendIdToDelete" name="id" />
                     <button type="submit" class="btn btn-danger">Eliminar</button>
                 </form>
             </div>
@@ -124,11 +144,12 @@
 </div>
 
 <script>
-    var deleteButtons = document.querySelectorAll('a[data-bs-target="#confirmDeleteModal"]');
-    deleteButtons.forEach(function(button) {
+    // Script para manejar la eliminación de amigos
+    var deleteFriendButtons = document.querySelectorAll('button[data-bs-target="#confirmDeleteFriendModal"]');
+    deleteFriendButtons.forEach(function(button) {
         button.addEventListener('click', function() {
-            var postId = this.getAttribute('data-post-id');
-            document.getElementById('postIdToDelete').value = postId;
+            var friendId = this.getAttribute('data-friend-id');
+            document.getElementById('friendIdToDelete').value = friendId;
         });
     });
 </script>
@@ -171,8 +192,6 @@
         htmlContent.Append("</div>");
 
         return new HtmlString(htmlContent.ToString());
-
-
     }
 
     public string ExtractYouTubeVideoId(string videoUrl)

@@ -1,16 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NexUs.Core.Application.Dtos.Account;
+using NexUs.Core.Application.Helpers;
 using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Core.Application.ViewModels.Comments;
 
 namespace NexUs.Web.Controllers
 {
+    [Authorize]
     public class CommentController : Controller
     {
         private readonly ICommentService _commentService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        AuthenticationResponse _user;
 
-        public CommentController(ICommentService commentService)
+
+        public CommentController(ICommentService commentService, IHttpContextAccessor httpContextAccessor)
         {
             _commentService = commentService;
+            _httpContextAccessor = httpContextAccessor;
+            _user = _httpContextAccessor.HttpContext!.Session.Get<AuthenticationResponse>("user")!;
         }
         public IActionResult Index()
         {
@@ -18,14 +28,14 @@ namespace NexUs.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment (int postId, string content, int parentCommentId)
+        public async Task<IActionResult> AddComment (int postId, string content, int parentCommentId, bool commentFromAFriend = false)
         {
             ModelState.Remove("Id");
             SaveCommentViewModel viewModel = new()
             {
                 PostId = postId,
                 Content = content,
-                UserId = "861d379c-89d0-4d5c-beb3-50757b3b19d5",
+                UserId = _user.Id,
                 ParentCommentId = parentCommentId == 0? null : parentCommentId
 
 
@@ -33,8 +43,9 @@ namespace NexUs.Web.Controllers
 
             await _commentService.Add(viewModel);
             
-
-            return RedirectToRoute(new { Controller = "Home", action = "Index" });
+            
+   
+            return RedirectToRoute(new { Controller = commentFromAFriend? "Friend" : "Home", action = "Index" });
 
         }
 

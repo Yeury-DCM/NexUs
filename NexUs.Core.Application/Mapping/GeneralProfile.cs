@@ -33,6 +33,10 @@ namespace NexUs.Core.Application.Mapping
                .ForMember(x => x.HasError, otp => otp.Ignore())
                .ReverseMap();
 
+
+            CreateMap<UserViewModel, SaveUserViewModel>()
+               .ReverseMap();
+
             CreateMap<PostViewModel, Post>()
                 .ReverseMap();
 

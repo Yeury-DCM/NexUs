@@ -71,5 +71,15 @@ namespace NexUs.Core.Application.Services
         {
             return _accountService.GetUserById(id);
         }
+
+        public Task<List<UserViewModel>> GetFriendsAsync(string userId)
+        {
+            return _accountService.GetFriendsAsync(userId);
+        }
+
+        Task<SaveUserViewModel> IUserService.GetByIdSaveViewModel(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

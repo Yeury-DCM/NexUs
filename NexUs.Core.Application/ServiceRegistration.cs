@@ -17,6 +17,7 @@ namespace NexUs.Core.Application
             serviceCollection.AddTransient<IUserService, UserService>();
             serviceCollection.AddTransient<ICommentService, CommentService>();
             serviceCollection.AddTransient<IPostService, PostService>();
+            serviceCollection.AddTransient<IFriendService, FriendService>();
 
         }
     }

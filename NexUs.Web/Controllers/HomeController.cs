@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NexUs.Core.Application.Dtos.Account;
 using NexUs.Core.Application.Helpers;
 using NexUs.Core.Application.Interfaces.Services;
+using NexUs.Core.Application.ViewModels.Friends;
 using NexUs.Core.Application.ViewModels.Posts;
 using NexUs.Web.Models;
 using System.Diagnostics;
@@ -14,22 +15,27 @@ namespace NexUs.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IEmailService _emailService;
+        private readonly IUserService _userService;
         private readonly IPostService _postService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private AuthenticationResponse _user;
 
 
-        public HomeController(IPostService postService, ILogger<HomeController> logger, IEmailService emailService, IHttpContextAccessor httpContextAccessor)
+
+        public HomeController(IPostService postService, ILogger<HomeController> logger, IEmailService emailService, IHttpContextAccessor httpContextAccessor, IUserService userService)
         {
             _logger = logger;
             _emailService = emailService;
             _postService = postService;
+            _userService = userService;
             _httpContextAccessor = httpContextAccessor;
+            _user = _httpContextAccessor.HttpContext!.Session.Get<AuthenticationResponse>("user")!;
+
         }
 
         public async Task<IActionResult> Index()
         {
-            AuthenticationResponse user = _httpContextAccessor.HttpContext!.Session.Get<AuthenticationResponse>("user")!;
-            List<PostViewModel> posts = await _postService.GetAllViewModelByUser(user.Id);
+            List<PostViewModel> posts = await _postService.GetAllViewModelByUser(_user.Id);
             return View(posts);
         }
 
@@ -42,6 +48,7 @@ namespace NexUs.Web.Controllers
         public async Task<IActionResult> Add(SavePostViewModel savePostViewModel)
         {
             ModelState.Remove("Id");
+            ModelState.Remove("DateTime");
 
 
             if (!ModelState.IsValid)
@@ -49,7 +56,7 @@ namespace NexUs.Web.Controllers
                 return View("SavePost", savePostViewModel);
             }
 
-            savePostViewModel.UserId = "861d379c-89d0-4d5c-beb3-50757b3b19d5";
+            savePostViewModel.UserId = _user.Id;
             savePostViewModel.DateTime = DateTime.Now;
             SavePostViewModel savedPost = await _postService.Add(savePostViewModel);
            
@@ -61,7 +68,7 @@ namespace NexUs.Web.Controllers
                 await _postService.Update(savedPost);
 
             }
-            return View("SavePost");
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Edit(int id)

@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace NexUs.Infrastructure.Identity.Contexts
 {
-    internal class IdentityContext : IdentityDbContext<ApplicationUser>
+    public class IdentityContext : IdentityDbContext<ApplicationUser>
     {
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -43,10 +43,15 @@ namespace NexUs.Infrastructure.Identity.Contexts
                 .HasForeignKey(c => c.UserId);
 
             builder.Entity<ApplicationUser>()
-                .HasMany<ApplicationUser>(a => a.Friends)
-                .WithMany(f => f.Friends)
-                .UsingEntity("UserFriend");
-        
+             .HasMany(u => u.Friends)
+             .WithMany()
+             .UsingEntity<Dictionary<string, object>>(
+                 "UserFriend",
+                 j => j.HasOne<ApplicationUser>().WithMany().HasForeignKey("FriendId").OnDelete(DeleteBehavior.ClientCascade),
+                 j => j.HasOne<ApplicationUser>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.ClientCascade)
+             );
+
+
             #endregion
 
         }

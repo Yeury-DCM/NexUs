@@ -3,6 +3,7 @@ using NexUs.Core.Application.Interfaces.Repositories;
 using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Core.Application.ViewModels.Comments;
 using NexUs.Core.Application.ViewModels.Posts;
+using NexUs.Core.Application.ViewModels.Users;
 using NexUs.Core.Domain.Entities;
 using NexUs.Core.Domain.Result;
 using System;
@@ -30,13 +31,35 @@ namespace NexUs.Core.Application.Services
         {
             OperationResult<IQueryable<Post>> result = await _postRepository.GetAllAsync();
 
+            try
+            {
+                List<Post> entities = result.Data!.Where(p => p.UserId == userId).OrderByDescending(p => p.DateTime).ToList();
+                List<PostViewModel> postsViewModel = _mapper.Map<List<PostViewModel>>(entities);
 
+                return await IncludUsersToPosts(postsViewModel);
+            }
+            catch(Exception ex)
+            {
+                return new List<PostViewModel>();
+            }
+        }
+
+        public async Task<List<PostViewModel>> GetAllViewModelsByFriends(string userId)
+        {
+
+
+            OperationResult<IQueryable<Post>> result = await _postRepository.GetAllAsync();
+
+            UserViewModel user = await _userService.GetById(userId);
+
+            
             List<Post> entities = result.Data!.Where(p => p.UserId == userId).OrderByDescending(p => p.DateTime).ToList();
 
             List<PostViewModel> postsViewModel = _mapper.Map<List<PostViewModel>>(entities);
 
             return await IncludUsersToPosts(postsViewModel);
         }
+
 
         private async Task<List<PostViewModel>> IncludUsersToPosts(List<PostViewModel> posts)
         {

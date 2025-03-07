@@ -10,6 +10,7 @@ namespace NexUs.Core.Application.ViewModels.Users
 {
     public class UserViewModel
     {
+        public string Id { get; set; }
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -21,6 +22,8 @@ namespace NexUs.Core.Application.ViewModels.Users
         public string? ImagePath { get; set; }
 
         public string PhoneNumber { get; set; }
+
+        public List<UserViewModel> Friends { get; set; }
 
     }
 }

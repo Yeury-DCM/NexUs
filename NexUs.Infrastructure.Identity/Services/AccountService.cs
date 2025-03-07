@@ -4,9 +4,11 @@ using Azure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using NexUs.Core.Application.Dtos.Account;
 using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Core.Application.ViewModels.Users;
+using NexUs.Infrastructure.Identity.Contexts;
 using NexUs.Infrastructure.Identity.Entities;
 using System.Text;
 
@@ -17,14 +19,16 @@ namespace NexUs.Infrastructure.Identity.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailService;
+        private readonly IdentityContext _context;
         private readonly IMapper _mapper;
 
 
-        public AccountService(IEmailService emailService, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public AccountService(IEmailService emailService, SignInManager<ApplicationUser> signInManager, IdentityContext context, UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
+            _context = context;
         }
 
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
@@ -133,15 +137,16 @@ namespace NexUs.Infrastructure.Identity.Services
         public async Task<string> ConfirmAccountAsync(string userId, string token)
         {
             var user = await _userManager.FindByIdAsync(userId);
+
             if (user == null)
             {
                 return "No account registred with this user";
             }
 
             token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-            var result = await _userManager.ConfirmEmailAsync(user, token); 
+            var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
-            { 
+            {
                 return $"Account confirmed for {user.Email}. You can now use the app.";
             }
             else
@@ -169,7 +174,7 @@ namespace NexUs.Infrastructure.Identity.Services
             var removePasswordResult = await _userManager.RemovePasswordAsync(user);
             var setPasswordResult = await _userManager.AddPasswordAsync(user, generatedPassword);
 
-          
+
             await _emailService.SendAsync(new Core.Application.Dtos.Email.EmailRequest()
             {
                 To = user.Email!,
@@ -178,7 +183,7 @@ namespace NexUs.Infrastructure.Identity.Services
             });
 
             return response;
-        }  
+        }
 
 
         private async Task<string> SendVerificationEmailUrl(ApplicationUser user, string origin)
@@ -198,11 +203,11 @@ namespace NexUs.Infrastructure.Identity.Services
         public async Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request)
         {
             UpdateUserResponse response = new() { HasError = false };
-          
 
-            ApplicationUser? user =await _userManager.FindByIdAsync(request.UserId);
 
-            if(user == null)
+            ApplicationUser? user = await _userManager.FindByIdAsync(request.UserId);
+
+            if (user == null)
             {
                 response.HasError = true;
                 response.Error = "No se encontró el usuario";
@@ -210,7 +215,7 @@ namespace NexUs.Infrastructure.Identity.Services
             }
 
 
-            
+
 
             user.ImagePath = request.ImagePath;
 
@@ -226,12 +231,24 @@ namespace NexUs.Infrastructure.Identity.Services
                 return response;
             }
 
-
+            
             user.UserName = request.UserName;
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
-            user.Email = request.Email;          
+            user.Email = request.Email;
             user.PhoneNumber = request.PhoneNumber;
+
+            user.Friends.Clear();
+
+            if (request.Friends != null)
+            {
+              
+                foreach (UserViewModel friend in request.Friends)
+                {
+                    user.Friends.Add(await _userManager.FindByIdAsync(friend.Id));
+                }
+
+            }
 
             if (request.Password != null)
             {
@@ -257,7 +274,7 @@ namespace NexUs.Infrastructure.Identity.Services
             return response;
         }
 
-       
+
 
         private string GeneratePassword(int requiredLength)
         {
@@ -270,7 +287,7 @@ namespace NexUs.Infrastructure.Identity.Services
                 password += ((char)rnd.Next(97, 123)); // 'a' - 'z'
                 password += ((char)rnd.Next(48, 57)); // '0' - '9'
                 password += ((char)rnd.Next(65, 91));// 'A' - 'Z'
-                password +=((char)rnd.Next(33, 48));// Special character
+                password += ((char)rnd.Next(33, 48));// Special character
             }
 
 
@@ -282,15 +299,50 @@ namespace NexUs.Infrastructure.Identity.Services
             ApplicationUser? user = await _userManager.FindByIdAsync(id);
             UserViewModel userViewModel = new()
             {
+                Id = user.Id,
                 UserName = user.UserName,
                 LastName = user.LastName,
                 Email = user.Email,
                 FirstName = user.FirstName,
                 ImagePath = user.ImagePath,
                 PhoneNumber = user.PhoneNumber
+               
             };
+            userViewModel.Friends =  await GetFriendsAsync(id);
             return userViewModel;
         }
+
+        public async Task<List<UserViewModel>> GetFriendsAsync(string userId)
+        {
+            // Obtener el usuario con sus amigos incluidos en la consulta
+            var user = await _context.Users
+                .Include(u => u.Friends) // Asegura que la propiedad Friends se cargue
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null || user.Friends == null || !user.Friends.Any())
+            {
+                return new List<UserViewModel>();  // Si no tiene amigos, devolvemos una lista vacía
+            }
+
+            // Mapea los amigos a UserViewModel
+            var friendsViewModel = user.Friends
+                .Select(friend => new UserViewModel
+                {
+                    Id = friend.Id,
+                    FirstName = friend.FirstName,
+                    LastName = friend.LastName,
+                    Email = friend.Email,
+                    UserName = friend.UserName,
+                    ImagePath = friend.ImagePath,
+                    PhoneNumber = friend.PhoneNumber
+                })
+                .ToList();
+
+            return friendsViewModel;
+        }
+
+
+
     }
 
 }
