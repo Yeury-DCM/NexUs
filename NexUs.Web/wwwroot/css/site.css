@@ -1,31 +1,32 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
-  background-color: #1c1c1c;
+    margin-bottom: 60px;
+    background-color: #1c1c1c;
 }
-a{
+
+a {
     text-decoration: none;
 }
 
- .card {
+.card {
     background-color: #333;
     border-radius: 1rem;
     margin: 0 auto; /* Centra el card */
@@ -38,7 +39,6 @@ a{
     height: 50px;
     object-fit: cover;
     border-radius: 100%;
-
 }
 
 .card p {
@@ -47,7 +47,55 @@ a{
 
 .post-img {
     border-radius: 50%;
-   
+}
+
+.nav-link {
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
 }
 
 
+
+
+/* Estilos para los links del menú */
+.nav-link {
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+    /* Hover con gris claro */
+    .nav-link:hover {
+        background-color: #495057 !important;
+    }
+
+    /* Opción activa con color específico */
+    .nav-link.active {
+        background-color: #008f89 !important;
+        font-weight: bold;
+    }
+
+/* Contenedor principal para el contenido */
+.content {
+    margin-left: 300px; /* Deja espacio suficiente para el sidebar */
+    padding: 20px;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background-color: #212529;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav {
+    flex-grow: 1; /* Hace que los elementos del menú ocupen el espacio disponible */
+}
+
+.user-dropdown {
+    margin-top: auto; /* Empuja el dropdown hacia abajo */
+}

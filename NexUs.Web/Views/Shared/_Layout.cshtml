@@ -1,4 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using NexUs.Core.Application.Dtos.Account
+@using NexUs.Core.Application.Helpers
+@inject IHttpContextAccessor httpContext
+@{
+    AuthenticationResponse user = httpContext.HttpContext!.Session.Get<AuthenticationResponse>("user")!;
+}
+
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,29 +19,57 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/NexUs.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">NexUs.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+<body class="d-flex flex-nowrap">
+    
+    @if (!IsSectionDefined("NoSidebar"))
+    {
+        <aside class="sidebar">
+            <a href="/" class="d-flex align-items-center mb-3 text-decoration-none">
+                <img src="~/Images/Logo/isotipo.PNG" width="50px" height="50px" />
+                <span class="fs-4 fw-bold text-info">MedSync</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a asp-controller="Home" asp-action="Index" class="nav-link text-light @(currentController == "Home" ? "active" : "")">
+                        <i class="fas fa-home me-2"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="Doctor" asp-action="Index" class="nav-link text-light @(currentController == "Doctor" ? "active" : "")">
+                        <i class="fas fa-user-friends me-2"></i> Amigos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="LabTest" asp-action="Index" class="nav-link text-light @(currentController == "LabTest" ? "active" : "")">
+                        <i class="fas fa-user me-2"></i> Mi perfil
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <div class="user-dropdown">
+                <a href="#" class="d-flex align-items-center text-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                    <strong>@user.UserName</strong>
+                </a>
+                <ul class="dropdown-menu text-small shadow">
+                    <li><a class="dropdown-item text-danger" asp-controller="User" asp-action="LogOut">Cerrar Sesión</a></li>
+                </ul>
             </div>
-        </nav>
-    </header>
+
+        </aside>
+    }
+    else
+    {
+        IgnoreSection("NoSidebar");
+    }
+
+
+
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

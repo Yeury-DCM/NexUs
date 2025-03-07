@@ -1,31 +1,35 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using NexUs.Core.Application.Dtos.Email;
+using NexUs.Core.Application.Dtos.Account;
+using NexUs.Core.Application.Helpers;
 using NexUs.Core.Application.Interfaces.Services;
-using NexUs.Core.Application.Services;
 using NexUs.Core.Application.ViewModels.Posts;
 using NexUs.Web.Models;
 using System.Diagnostics;
 
 namespace NexUs.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IEmailService _emailService;
         private readonly IPostService _postService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public HomeController(IPostService postService, ILogger<HomeController> logger, IEmailService emailService)
+        public HomeController(IPostService postService, ILogger<HomeController> logger, IEmailService emailService, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
             _emailService = emailService;
             _postService = postService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IActionResult> Index()
         {
-            List<PostViewModel> posts = await _postService.GetAllViewModel();
+            AuthenticationResponse user = _httpContextAccessor.HttpContext!.Session.Get<AuthenticationResponse>("user")!;
+            List<PostViewModel> posts = await _postService.GetAllViewModelByUser(user.Id);
             return View(posts);
         }
 

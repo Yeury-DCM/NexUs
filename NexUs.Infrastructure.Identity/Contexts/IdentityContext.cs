@@ -41,6 +41,12 @@ namespace NexUs.Infrastructure.Identity.Contexts
                 .HasMany<Comment>(a => a.Comments)
                 .WithOne()
                 .HasForeignKey(c => c.UserId);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany<ApplicationUser>(a => a.Friends)
+                .WithMany(f => f.Friends)
+                .UsingEntity("UserFriend");
+        
             #endregion
 
         }

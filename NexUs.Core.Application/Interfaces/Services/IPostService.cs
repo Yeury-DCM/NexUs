@@ -10,5 +10,6 @@ namespace NexUs.Core.Application.Interfaces.Services
 {
     public interface IPostService : IGenericService<PostViewModel, SavePostViewModel, Post>
     {
+        Task<List<PostViewModel>> GetAllViewModelByUser(string userId);
     }
 }
