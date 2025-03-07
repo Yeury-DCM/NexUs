@@ -341,8 +341,50 @@ namespace NexUs.Infrastructure.Identity.Services
             return friendsViewModel;
         }
 
+        public async Task<UserViewModel> GetUserByName(string userName)
+        {
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
 
+            if(user == null)
+            {
+                return null;
+            }
+            UserViewModel userViewModel = new()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                LastName = user.LastName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                ImagePath = user.ImagePath,
+                PhoneNumber = user.PhoneNumber
 
+            };
+            userViewModel.Friends = await GetFriendsAsync(user.Id);
+            return userViewModel;
+        }
+
+        public async Task<SaveUserViewModel> GetSaveUserViewModel(string id)
+        {
+            ApplicationUser? user = await _userManager.FindByIdAsync(id);
+            
+            if (user == null)
+            {
+                return null;
+            }
+            SaveUserViewModel userViewModel = new()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                LastName = user.LastName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                ImagePath = user.ImagePath,
+                PhoneNumber = user.PhoneNumber,
+            };
+
+            return userViewModel;
+        }
     }
 
 }

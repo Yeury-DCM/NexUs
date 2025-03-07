@@ -12,7 +12,9 @@ namespace NexUs.Core.Application.Interfaces.Services
         Task <UpdateUserResponse> UpdateUserAsync (UpdateUserRequest request);
         Task SingOutAsync();
 
+        Task<SaveUserViewModel> GetSaveUserViewModel(string id);
         Task<UserViewModel> GetUserById(string id);
+        Task<UserViewModel> GetUserByName(string userName);
 
         Task<List<UserViewModel>> GetFriendsAsync(string userId);
     }

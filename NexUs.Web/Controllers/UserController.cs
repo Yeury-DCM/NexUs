@@ -4,6 +4,8 @@ using NexUs.Core.Application.Dtos.Account;
 using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Core.Application.ViewModels.Users;
 using NexUs.Core.Application.Helpers;
+using NexUs.Core.Application.Services;
+using NexUs.Core.Application.ViewModels.Posts;
 
 namespace NexUs.Web.Controllers
 {
@@ -125,7 +127,34 @@ namespace NexUs.Web.Controllers
             return RedirectToAction("Index");
         }
 
-      
+        public async Task<IActionResult> Edit(string id)
+        {
+            SaveUserViewModel saveUserViewModel = await _userService.GetByIdSaveViewModel(id);
+            return View(saveUserViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(SavePostViewModel savePostViewModel)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return View("SavePost", savePostViewModel);
+            }
+
+
+            if (savePostViewModel.ImageFile != null)
+            {
+                string imagePath = UploadFile(savePostViewModel.ImageFile!, (int)savePostViewModel.Id!, true, savePostViewModel.ImagePath!);
+                savePostViewModel.ImagePath = imagePath;
+            }
+
+            await _postService.Update(savePostViewModel);
+
+            return RedirectToAction("Index");
+        }
+
+
 
         private string UploadFile(IFormFile file, string id, bool isEditMode = false, string imagePath = "")
         {

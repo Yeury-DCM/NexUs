@@ -58,7 +58,7 @@ namespace NexUs.Core.Application.ViewModels.Users
         [Required(ErrorMessage = "Suba su foto de perfil.")]
         public IFormFile File { get; set; }
 
-        List<UserViewModel> Friends { get; set; }
+        public List<UserViewModel> Friends { get; set; }
         public bool HasError { get; set; }
         public string? Error { get; set; }
     }

@@ -13,6 +13,7 @@ namespace NexUs.Core.Application.Interfaces.Services
         Task SignOutAsync();
 
         Task<UserViewModel> GetById(string id);
+        Task<UserViewModel> GetByUsername(string id);
         Task<SaveUserViewModel> GetByIdSaveViewModel(string id);
 
         Task<List<UserViewModel>> GetFriendsAsync(string userId);

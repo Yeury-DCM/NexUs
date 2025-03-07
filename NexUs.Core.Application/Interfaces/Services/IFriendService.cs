@@ -7,5 +7,6 @@ namespace NexUs.Core.Application.Interfaces.Services
     {
         Task<FriendsAndPostsViewModel> GetFriendsAndPostsAsync(string userId);
         Task RemoveFriend(string MainUserId, string FriendId);
+        Task<AddFriendViewModel> AddFriend(string mainUserId, string friendUserName);
     }
 }

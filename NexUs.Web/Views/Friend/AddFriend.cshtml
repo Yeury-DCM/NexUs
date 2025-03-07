@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Agregar Amigo";
+}
+@model NexUs.Core.Application.ViewModels.Friends.AddFriendViewModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card text-white p-4 shadow-lg">
+                <h4 class="mb-4 text-center">Agregar Amigo</h4>
+
+                @if (!Model.Sucess)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>@Model.Message </strong> 
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form asp-controller="Friend" asp-action="AddFriend" method="post">
+                    <div class="form-group mb-3">
+                        <label asp-for="UserName" class="form-label">Nombre de Usuario</label>
+                        <input asp-for="UserName" class="form-control" placeholder="Ingresa el nombre de usuario que deseas agregar">
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-controller="Friend" asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn" style="background-color: #008f89; color: white;">Agregar Amigo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

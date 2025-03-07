@@ -55,5 +55,44 @@ namespace NexUs.Core.Application.Services
             await _userService.UpdateUserAsync(UpdateFriendRequest);
 
         }
+
+        public async Task<AddFriendViewModel> AddFriend(string mainUserId, string friendUserName)
+        {
+            AddFriendViewModel addFriendViewModel = new();
+
+            UserViewModel mainUser = await _userService.GetById(mainUserId);
+            UserViewModel friend = await _userService.GetByUsername(friendUserName);
+
+            if(friend == null)
+            {
+                addFriendViewModel.Sucess = false;
+                addFriendViewModel.Message = "El usuario no existe.";
+                return addFriendViewModel;
+            }
+
+            if (mainUser.Friends.Any( f => f.Id == friend.Id))
+            {
+                addFriendViewModel.Sucess = false;
+                addFriendViewModel.Message = $"Tu y {friend.FirstName} ya son amigos.";
+                return addFriendViewModel;
+            }
+
+            mainUser.Friends.Add(friend);
+            friend.Friends.Add(mainUser);
+
+
+            SaveUserViewModel updateMainUserRequest = _mapper.Map<SaveUserViewModel>(mainUser);
+            SaveUserViewModel UpdateFriendRequest = _mapper.Map<SaveUserViewModel>(friend);
+
+            var updateMainUserResponse = await _userService.UpdateUserAsync(updateMainUserRequest);
+            var updateFriendResponse = await _userService.UpdateUserAsync(UpdateFriendRequest);
+
+            addFriendViewModel.Sucess = !updateMainUserResponse.HasError && !updateFriendResponse.HasError;
+
+            if (!addFriendViewModel.Sucess)
+                addFriendViewModel.Message = "Ocurrió un error agregando al usuario como amigo";
+
+            return addFriendViewModel;
+        }
     }
 }
