@@ -6,18 +6,23 @@ using NexUs.Core.Application.ViewModels.Users;
 using NexUs.Core.Application.Helpers;
 using NexUs.Core.Application.Services;
 using NexUs.Core.Application.ViewModels.Posts;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NexUs.Web.Controllers
 {
+    
     public class UserController : Controller
     {
         private readonly IUserService _userService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        AuthenticationResponse _user;
 
         public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor)
         {
             _userService = userService;
             _httpContextAccessor = httpContextAccessor;
+            _user = httpContextAccessor.HttpContext!.Session.Get<AuthenticationResponse>("user")!;
         }
         public IActionResult Index()
         {
@@ -27,6 +32,16 @@ namespace NexUs.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(LoginViewModel loginViewModel)
         {
+            if (HttpContext.Request.Query.ContainsKey("ReturnUrl")) // Si viene redirigido
+            {
+                TempData["ErrorMessage"] = "Debe iniciar sesión para acceder a esta sección.";
+            }
+
+            if (!User.Identity.IsAuthenticated) // Si el usuario no está autenticado
+            {
+                TempData["ErrorMessage"] = "Debe iniciar sesión para acceder a esta sección.";
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(loginViewModel);
@@ -127,35 +142,49 @@ namespace NexUs.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Edit(string id)
+        [Authorize]
+        public async Task<IActionResult> Edit()
         {
-            SaveUserViewModel saveUserViewModel = await _userService.GetByIdSaveViewModel(id);
+            SaveUserViewModel saveUserViewModel = await _userService.GetByIdSaveViewModel(_user.Id);
             return View(saveUserViewModel);
         }
 
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Edit(SavePostViewModel savePostViewModel)
+        public async Task<IActionResult> Edit(SaveUserViewModel saveUserViewModel)
         {
+
+            if(saveUserViewModel.Password.IsNullOrEmpty() && saveUserViewModel.ConfirmPassword.IsNullOrEmpty())
+            {
+                ModelState.Remove("Password");
+                ModelState.Remove("ConfirmPassword");
+            }
+
+            ModelState.Remove("File");
+            ModelState.Remove("Friends");
 
             if (!ModelState.IsValid)
             {
-                return View("SavePost", savePostViewModel);
+                return View("Edit", saveUserViewModel);
             }
 
+            saveUserViewModel.Friends = (await _userService.GetByIdSaveViewModel(_user.Id)).Friends;
 
-            if (savePostViewModel.ImageFile != null)
+            if (saveUserViewModel.File!= null)
             {
-                string imagePath = UploadFile(savePostViewModel.ImageFile!, (int)savePostViewModel.Id!, true, savePostViewModel.ImagePath!);
-                savePostViewModel.ImagePath = imagePath;
+                string imagePath = UploadFile(saveUserViewModel.File!, saveUserViewModel.Id!, true, saveUserViewModel.ImagePath!);
+                saveUserViewModel.ImagePath = imagePath;
             }
 
-            await _postService.Update(savePostViewModel);
 
-            return RedirectToAction("Index");
+            await _userService.UpdateUserAsync(saveUserViewModel);
+
+
+            return RedirectToAction("Edit");
         }
 
 
-
+        [Authorize]
         private string UploadFile(IFormFile file, string id, bool isEditMode = false, string imagePath = "")
         {
 

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home"; 
+    ViewData["Title"] = "Home";
 }
 @using NexUs.Core.Application.ViewModels.Posts
 @using NexUs.Core.Application.ViewModels.Comments
@@ -11,10 +11,9 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <!-- Botón para añadir una nueva publicación alineado a la izquierda -->
-
-            <div class="d-flex justify-content-center mb-3 px-4">
-                <a asp-action = "Add" asp-controller ="Home" class="btn btn-outline-info">Añadir publicación</a>
+            <!-- Botón para añadir una nueva publicación alineado correctamente con los posts -->
+            <div class="col-lg-8 mb-4 px-0">
+                <a asp-action="Add" asp-controller="Home" class="btn" style="background-color: #008f89; color: white;">Añadir publicación</a>
             </div>
 
             @foreach (var post in Model)
@@ -63,10 +62,7 @@
                         string videoId = @ExtractYouTubeVideoId(post.VideoPath);
 
                         <div class="ratio ratio-16x9">
-
-
                             <iframe class="mb-3" width="100%" height="100%" src="https://www.youtube.com/embed/@videoId" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
                         </div>
                     }
 
@@ -171,8 +167,6 @@
         htmlContent.Append("</div>");
 
         return new HtmlString(htmlContent.ToString());
-
-
     }
 
     public string ExtractYouTubeVideoId(string videoUrl)

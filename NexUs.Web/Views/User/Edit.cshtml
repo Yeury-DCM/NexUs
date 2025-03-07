@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Actualizar Perfil";
 }
-@model NexUs.Core.Application.ViewModels.Users.UserViewModel
+@model NexUs.Core.Application.ViewModels.Users.SaveUserViewModel
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -17,7 +17,7 @@
                     </div>
                 }
 
-                <form asp-controller="User" asp-action="Update" method="post" enctype="multipart/form-data">
+                <form asp-controller="User" asp-action="Edit" method="post" enctype="multipart/form-data">
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="ImagePath" />
 
@@ -92,6 +92,8 @@
                         <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver al Inicio</a>
                         <button type="submit" class="btn" style="background-color: #008f89; color: white;">Guardar Cambios</button>
                     </div>
+
+                    <input type ="hidden" asp-for = "Friends"/>
                 </form>
             </div>
         </div>
@@ -107,7 +109,5 @@
             nextSibling.innerText = fileName;
         })
     </script>
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+  
 }

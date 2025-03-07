@@ -383,6 +383,7 @@ namespace NexUs.Infrastructure.Identity.Services
                 PhoneNumber = user.PhoneNumber,
             };
 
+            userViewModel.Friends = await GetFriendsAsync(id);
             return userViewModel;
         }
     }

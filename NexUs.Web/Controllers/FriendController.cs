@@ -5,9 +5,11 @@ using NexUs.Core.Application.Helpers;
 using NexUs.Core.Application.Interfaces.Services;
 using NexUs.Core.Application.Helpers;
 using NexUs.Core.Application.ViewModels.Friends;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NexUs.Web.Controllers
 {
+    [Authorize]
     public class FriendController : Controller
     {
         IFriendService _friendsService;

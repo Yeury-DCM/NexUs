@@ -35,6 +35,7 @@ namespace NexUs.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
+
             List<PostViewModel> posts = await _postService.GetAllViewModelByUser(_user.Id);
             return View(posts);
         }
@@ -101,7 +102,31 @@ namespace NexUs.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _postService.Delete(id);
+
+            //Get Directory Path
+            string basePath = $"/images/Posts/{id}";
+            string path = $"{Directory.GetCurrentDirectory()}/wwwroot{basePath}";
+
+            if (Directory.Exists(path))
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(path);
+
+                foreach (FileInfo file in directoryInfo.GetFiles())
+                {
+                    file.Delete();
+                }
+
+                foreach (DirectoryInfo folder in directoryInfo.GetDirectories())
+                {
+                    folder.Delete();
+                }
+
+                Directory.Delete(path, true);
+
+            }
             return RedirectToAction("Index");
+
+
         }
 
 

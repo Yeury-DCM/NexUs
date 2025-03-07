@@ -23,7 +23,7 @@ namespace NexUs.Core.Application.ViewModels.Users
 
         public string PhoneNumber { get; set; }
 
-        public List<UserViewModel> Friends { get; set; }
+        public List<UserViewModel> Friends { get; set; } = new List<UserViewModel>();
 
     }
 }

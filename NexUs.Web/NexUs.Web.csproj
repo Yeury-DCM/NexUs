@@ -24,8 +24,4 @@
     <ProjectReference Include="..\NexUs.Infrastructure.Shared\NexUs.Infrastructure.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\images\Users\" />
-  </ItemGroup>
-
 </Project>

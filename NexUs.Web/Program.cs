@@ -2,6 +2,8 @@ using NexUs.Infrastructure.Identity;
 using NexUs.Infrastructure.Shared;
 using NexUs.Core.Application;
 using NexUs.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Web;
 ;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +15,7 @@ builder.Services.AddSharedInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceLayer(builder.Configuration);
 builder.Services.AddApplicationLayer();
 builder.Services.AddSession();
-    
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,6 +32,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
 
 app.UseSession();
 

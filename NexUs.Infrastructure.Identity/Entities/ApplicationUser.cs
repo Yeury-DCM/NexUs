@@ -9,7 +9,7 @@ namespace NexUs.Infrastructure.Identity.Entities
         public required string LastName { get; set; }
         public string? ImagePath {  get; set; }
 
-        public ICollection<ApplicationUser> Friends { get; set; }
+        public ICollection<ApplicationUser> Friends { get; set; } = new List<ApplicationUser>();
         public ICollection<Post> Posts { get; set; }
         
         public ICollection<Comment> Comments { get; set; }
