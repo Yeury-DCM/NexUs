@@ -1,15 +1,15 @@
 # 🌐 Red Social ASP.NET Core MVC
 
 ## 📝 Descripción
-Aplicación web de red social desarrollada con ASP.NET Core MVC que permite a los usuarios crear publicaciones, interactuar con amigos, comentar y gestionar sus perfiles.
+Aplicación web de red social desarrollada implementando una **Arquitectura Onion** y utilizando ASP.NET Core MVC que permite a los usuarios crear publicaciones, interactuar con amigos, comentar y gestionar sus perfiles.
 
 ## ✨ Características
 
 ### 🔐 Sistema de Autenticación
 - **Login**: Sistema de acceso con redirección automática al Home si ya está logueado
 - **Registro**: Creación de cuenta con validaciones
-- **Activación de cuenta**: Sistema de activación por correo electrónico
-- **Recuperación de contraseña**: Restablecimiento mediante correo electrónico
+- **Activación de cuenta**: Sistema de activación por **correo electrónico**
+- **Recuperación de contraseña**: Restablecimiento mediante **correo electrónico**
 
 ### 📰 Publicaciones
 - Creación, edición y eliminación de publicaciones
@@ -40,23 +40,28 @@ Aplicación web de red social desarrollada con ASP.NET Core MVC que permite a lo
 *Pantalla de inicio de sesión con opciones para registro y recuperación de contraseña*
 
 ### Registro de Usuario
-![Register Screen](/screenshots/register.png)
+![registro](https://github.com/user-attachments/assets/7984f2d7-48e4-4f68-86bf-e1ffb6b18245)
+
 *Formulario de registro con validaciones en tiempo real*
 
 ### Página Principal (Home)
-![Home Feed](/screenshots/home.png)
+![home](https://github.com/user-attachments/assets/11803a24-8136-4ee8-ba2a-609341faf005)
+
 *Vista del timeline con publicaciones propias y sistema de comentarios*
 
 ### Creación de Publicación
-![Create Post](/screenshots/create-post.png)
+![crear post](https://github.com/user-attachments/assets/2dd44642-6fa2-4216-84d9-084963355ded)
+
 *Interfaz para crear nuevas publicaciones con soporte multimedia*
 
 ### Gestión de Amigos
-![Friends Management](/screenshots/friends.png)
+![amigos](https://github.com/user-attachments/assets/92042adc-e6d6-49dd-bf0b-566e36f437ce)
+
 *Pantalla de gestión de amigos y visualización de publicaciones*
 
 ### Perfil de Usuario
-![User Profile](/screenshots/profile.png)
+![actualizar perfil](https://github.com/user-attachments/assets/977027a5-b57a-4dc6-ac74-8674c1323d0f)
+
 *Edición de información personal y foto de perfil*
 
 ## 🛠️ Tecnologías Utilizadas
@@ -72,26 +77,79 @@ Aplicación web de red social desarrollada con ASP.NET Core MVC que permite a lo
 
 ## 📂 Estructura del Proyecto
 
-La solución implementa la arquitectura ONION con las siguientes capas:
+La solución implementa una arquitectura **Onion** con el siguiente esquema:
 
 ```
-SocialNetwork/
-├── SocialNetwork.Domain/            # Entidades y lógica de negocio
-├── SocialNetwork.Application/       # Servicios de aplicación e interfaces
-├── SocialNetwork.Infrastructure/    # Implementaciones de infraestructura
-│   ├── Persistence/                 # Acceso a datos y migraciones
-│   └── Services/                    # Servicios externos (correo, etc.)
-├── SocialNetwork.Shared/            # Componentes compartidos
-└── SocialNetwork.WebApp/            # Capa de presentación MVC
-    ├── Controllers/                 # Controladores MVC
-    ├── ViewModels/                  # Modelos de vista
-    └── Views/                       # Vistas Razor
+NexUs/
+├── Core/
+│   ├── NexUs.Core.Application/
+│   │   ├── Dependencies/
+│   │   ├── Dtos/
+│   │   ├── Helpers/
+│   │   ├── Interfaces/
+│   │   ├── Mapping/
+│   │   ├── Services/
+│   │   ├── ViewModels/
+│   │   └── ServiceRegistration.cs
+│   │
+│   └── NexUs.Core.Domain/
+│       ├── Dependencies/
+│       ├── Common/
+│       ├── Entities/
+│       ├── Result/
+│       └── Settings/
+│
+├── Infrastructure/
+│   ├── NexUs.Infrastructure.Identity/
+│   │   ├── Dependencies/
+│   │   ├── Contexts/
+│   │   ├── Entities/
+│   │   ├── Migrations/
+│   │   ├── Services/
+│   │   └── ServiceRegistration.cs
+│   │
+│   ├── NexUs.Infrastructure.Persistence/
+│   │   ├── Dependencies/
+│   │   ├── Contexts/
+│   │   ├── Migrations/
+│   │   ├── Repositories/
+│   │   └── ServiceRegistration.cs
+│   │
+│   └── NexUs.Infrastructure.Shared/
+│       ├── Dependencies/
+│       ├── Services/
+│       └── ServiceRegistration.cs
+│
+└── Presentation/
+    └── NexUs.Web/
+        ├── Connected Services/
+        ├── Dependencies/
+        ├── Properties/
+        ├── wwwroot/
+        ├── Controllers/
+        ├── Models/
+        └── Views/
 ```
 
+Este proyecto sigue una estructura de arquitectura limpia con separación de responsabilidades:
+
+- **Core**: Contiene la lógica de negocio y dominio de la aplicación
+  - **Application**: Servicios, DTOs, interfaces y lógica de aplicación
+  - **Domain**: Entidades de dominio 
+
+- **Infrastructure**: Implementación de interfaces y acceso a recursos externos
+  - **Identity**: Gestión de autenticación y autorización
+  - **Persistence**: Acceso a datos y repositorios
+  - **Shared**: Servicios compartidos entre capas, como el envío de correo.
+
+- **Presentation**: Capa de presentación y UI
+  - **Web**: Aplicación ASP.NET MVC con controladores, vistas y modelos
+
+Cada proyecto tiene su propio `ServiceRegistration.cs` para la configuración de inyección de dependencias, facilitando la integración en la aplicación principal.
 ## 🚀 Configuración Inicial
 
 ### ⚠️ Requisitos Previos
-- .NET SDK 6.0/7.0/8.0 o superior
+- .NET SDK 7.0/8.0 o superior
 - SQL Server o SQL Server Express
 - Visual Studio 2022 / VS Code con extensiones .NET
 
@@ -125,54 +183,5 @@ SocialNetwork/
    dotnet run --project SocialNetwork.WebApp
    ```
 
-## 📱 Uso de la Aplicación
 
-1. **Crear una cuenta**: Regístrese a través del formulario de registro y active su cuenta mediante el enlace enviado por correo. ✅
-2. **Iniciar sesión**: Acceda con sus credenciales de usuario. 🔑
-3. **Personalizar perfil**: Actualice su información personal en la sección "Mi Perfil". 👤
-4. **Agregar amigos**: Busque y añada amigos mediante su nombre de usuario. 👥
-5. **Crear publicaciones**: Comparta texto, imágenes o videos desde la pantalla principal. 📝
-6. **Interactuar**: Comente publicaciones propias y de amigos, y responda a comentarios específicos. 💬
 
-## 🖥️ Vistas Principales
-
-### Home
-La página principal muestra un timeline con todas las publicaciones del usuario ordenadas cronológicamente. Desde aquí, los usuarios pueden:
-- Crear nuevas publicaciones con texto, imágenes o videos
-- Ver, editar y eliminar sus publicaciones existentes
-- Leer y responder a comentarios
-- Crear hilos de conversación con respuestas anidadas
-
-### Amigos
-Esta sección permite a los usuarios gestionar sus conexiones sociales:
-- Ver un listado de todos sus amigos con foto de perfil
-- Agregar nuevos amigos mediante búsqueda por nombre de usuario
-- Eliminar amigos existentes
-- Visualizar las publicaciones de todos sus amigos en orden cronológico
-- Interactuar con las publicaciones de sus amigos mediante comentarios
-
-### Mi Perfil
-El área personal del usuario donde puede:
-- Ver y actualizar su información básica (nombre, apellido, teléfono, correo)
-- Cambiar su foto de perfil
-- Modificar su contraseña de forma segura
-- Revisar sus datos de contacto
-
-### Creación de Publicación
-Interfaz intuitiva que permite a los usuarios compartir contenido:
-- Editor de texto para escribir el contenido de la publicación
-- Opción para adjuntar imágenes desde el dispositivo
-- Posibilidad de incluir videos de YouTube mediante enlace
-- Vista previa del contenido antes de publicar
-
-## 🤝 Contribución
-
-1. Fork el repositorio
-2. Cree una rama para su característica (`git checkout -b feature/nueva-funcionalidad`)
-3. Realice sus cambios y haga commit (`git commit -m 'Añadir nueva funcionalidad'`)
-4. Haga push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abra un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está licenciado bajo [MIT License](LICENSE).
