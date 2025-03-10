@@ -1,4 +1,4 @@
-# 🌐 Red Social ASP.NET Core MVC
+# 🌐 NexUs (Red Social)
 
 ## 📝 Descripción
 Aplicación web de red social desarrollada implementando una **Arquitectura Onion** y utilizando ASP.NET Core MVC que permite a los usuarios crear publicaciones, interactuar con amigos, comentar y gestionar sus perfiles.
