@@ -83,52 +83,19 @@ La solución implementa una arquitectura **Onion** con el siguiente esquema:
 NexUs/
 ├── Core/
 │   ├── NexUs.Core.Application/
-│   │   ├── Dependencies/
-│   │   ├── Dtos/
-│   │   ├── Helpers/
-│   │   ├── Interfaces/
-│   │   ├── Mapping/
-│   │   ├── Services/
-│   │   ├── ViewModels/
-│   │   └── ServiceRegistration.cs
 │   │
 │   └── NexUs.Core.Domain/
-│       ├── Dependencies/
-│       ├── Common/
-│       ├── Entities/
-│       ├── Result/
-│       └── Settings/
-│
+│ 
 ├── Infrastructure/
 │   ├── NexUs.Infrastructure.Identity/
-│   │   ├── Dependencies/
-│   │   ├── Contexts/
-│   │   ├── Entities/
-│   │   ├── Migrations/
-│   │   ├── Services/
-│   │   └── ServiceRegistration.cs
-│   │
+│   │  
 │   ├── NexUs.Infrastructure.Persistence/
-│   │   ├── Dependencies/
-│   │   ├── Contexts/
-│   │   ├── Migrations/
-│   │   ├── Repositories/
-│   │   └── ServiceRegistration.cs
 │   │
 │   └── NexUs.Infrastructure.Shared/
-│       ├── Dependencies/
-│       ├── Services/
-│       └── ServiceRegistration.cs
-│
+│      
 └── Presentation/
     └── NexUs.Web/
-        ├── Connected Services/
-        ├── Dependencies/
-        ├── Properties/
-        ├── wwwroot/
-        ├── Controllers/
-        ├── Models/
-        └── Views/
+    
 ```
 
 Este proyecto sigue una estructura de arquitectura limpia con separación de responsabilidades:
